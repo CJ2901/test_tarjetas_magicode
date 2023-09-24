@@ -1,36 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito de compra</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito de compra</title>
 </head>
+
 <body>
+  <div class="price-info">
+    <h4>Resumen de carrito de compras</h4>
+    <ul class="list-items">
+      <li>
+        <div class="item-info">
+          <span class="item-name">Curso de Programación orientada a objetos con Java</span>
+          <span class="item-precio">S/. 99.99</span>
+          <span class="item-price">(USD 25.00)</span>
+        </div>
+      </li>
+      <li>
+        <div class="item-info">
+          <span class="item-name">Curso de React, de cero a experto (Hooks y MERN)</span>
+          <span class="item-precio">S/. 99.99</span>
+          <span class="item-price">(USD 20.00)</span>
+        </div>
+      </li>
+    </ul>
+    <span>Total:</span>
+    <span id="priceTotal">S/. 199.98</span>
+  </div>
+  <br />
+  <br />
+  <br />
+  <a href="./tarjeta.html">Pagar con tarjeta</a>
+  <br />
+  <a href="./yape.html">Pagar con yape</a>
+  <br />
+  <a id="stripeLink" href="#">Pagar con Stripe</a>
 
-
-    <div class="price-info">
-        <h4>Resumen de carrito de compras</h4>
-        <ul class="list-items">
-          <li>
-            <div>
-              <span>Curso de Programación orientada a objetos con Java</span>
-            </div>
-          </li>
-          <li>
-            <div>
-              <span>Curso de React, de cero a experto (Hooks y MERN)</span>
-            </div>
-          </li>
-        </ul>
-    </div>
-
-    <br/>
-    <br/>
-    <br/>
-
-    <a href="./tarjeta.html">Pagar con tarjeta</a>
-    <br/>
-    <a href="./yape.html">Pagar con yape</a>
+  <script>
     
-  </body>
-  </html>
+  </script>
+
+  <script>
+    const btnStripe = document.getElementById("stripeLink");
+    btnStripe.addEventListener("click", function (e) {
+      e.preventDefault();
+      const items = document.querySelectorAll('.list-items li');
+      const compraInfo = {
+        line_items: [],
+        // Extraer el código token de la sesión
+        // Será necesario para la solicitud al servidor para comprar en Stripe
+        token_session: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2NGU1MTY0ZWE3ZDU2ZmY0ZmE5NzM5MzgiLCJpYXQiOjE2OTU1Nzg5NDYsImV4cCI6MTY5NTU5MzM0Nn0.jmChr8Kn50vXNv_3n6O0wTpK8_kLzvWbOPohhn9vqzw"
+      };
+      items.forEach(item => {
+        const itemName = item.querySelector('.item-name').textContent;
+        const itemPriceSpan = item.querySelector('.item-price').textContent;
+        const itemPriceDigits = itemPriceSpan.match(/\d+\.\d{2}/);
+        if (itemPriceDigits) {
+          const itemPrice = parseFloat(itemPriceDigits[0]) * 100; // Convertir a centavos
+          compraInfo.line_items.push({
+            price_data: {
+              product_data: {
+                name: itemName,
+                description: "Curso"
+              },
+              currency: "usd",
+              unit_amount: itemPrice
+            },
+            quantity: 1
+          });
+        }
+      });
+      const compraInfoBase64 = btoa(JSON.stringify(compraInfo));
+      const stripeLink = document.getElementById('stripeLink');
+      // Es necesario que tengas un nuevo archivo html "stripe.html" o lo integres en uno mismo
+      // A tu criterio de manera más ordenada
+      stripeLink.href = `./stripe.html?data=${compraInfoBase64}&pay=true`;
+      window.location.href = stripeLink.href;
+    });
+  </script>
+</body>
+
+</html>

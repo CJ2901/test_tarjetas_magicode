@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pago con Stripe</title>
+</head>
+
+<body>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pagarConStripe = urlParams.get('pay');
+      const dataParam = urlParams.get('data');
+      // Si el parámetro existe y tiene un valor válido, realiza la solicitud POST
+      if (pagarConStripe === 'true' && dataParam) {
+
+        try {
+          const decodedData = atob(dataParam);
+          const objeto = JSON.parse(decodedData);
+          await chargeStripe(objeto);
+        } catch (error) {
+          alert("Error al decodificar la data: " + error);
+        }
+      }
+
+      async function chargeStripe(objeto) {
+        try {
+          const response = await fetch("http://localhost:8080/api/pay/stripe", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(objeto)
+          });
+
+          if (response.ok) {
+            const responseData = await response.json();
+
+            if (responseData && responseData.checkout_url) {
+              // Redirigir al usuario a la URL
+              window.location.href = responseData.checkout_url;
+            } else {
+              alert('URL de sesión de Stripe no válida');
+            }
+
+          } else {
+            const responseData = await response.json();
+            console.log(responseData)
+            alert("Error al procesar la solicitud: " + responseData);
+          }
+        } catch (error) {
+          alert("Error al realizar la solicitud: ", error);
+
+        }
+      }
+    })
+  </script>
+
+</body>
+
+</html>

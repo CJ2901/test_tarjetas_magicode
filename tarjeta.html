@@ -1,69 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pago con tarjeta</title>
 </head>
-<body>
 
+<body>
 
     <div class="price-info">
         <h4>Resumen de carrito de compras</h4>
-        <ul class="list-items">
-          <li>
-            <div>
-              <span>Curso de Programación orientada a objetos con Java</span>
-              <span>S/ 99.99</span>
-            </div>
-          </li>
-          <li>
-            <div>
-              <span>Curso de React, de cero a experto (Hooks y MERN)</span>
-              <span>S/ 109.99</span>
-            </div>
-          </li>
-        </ul>
-      
         <div>
-          <span>Total:</span>
-          <span id="priceTotal">S/. 209.98</span>
+            <span>Total:</span>
+            <span id="priceTotal">S/. 199.98</span>
         </div>
     </div>
 
-    <br/>
+    <br />
     <a href="./index.html">Atrás</a>
-    <br/>
-    <br/>
+    <br />
+    <br />
 
     <h1>Pago con tarjeta</h1>
     <div id="formulario-checkout">
         <form>
             <div>
-              <label>
-                <span>Correo Electrónico</span>
-                <input type="text" size="50" data-culqi="card[email]" id="card[email]">
-              </label>
+                <label>
+                    <span>Correo Electrónico</span>
+                    <input type="text" size="50" data-culqi="card[email]" id="card[email]">
+                </label>
             </div>
             <div>
-              <label>
-                <span>Número de tarjeta</span>
-                <input type="text" size="20" data-culqi="card[number]" id="card[number]">
-              </label>
+                <label>
+                    <span>Número de tarjeta</span>
+                    <input type="text" size="20" data-culqi="card[number]" id="card[number]">
+                </label>
             </div>
             <div>
-              <label>
-                <span>CVV</span>
-                <input type="text" size="4" data-culqi="card[cvv]" id="card[cvv]">
-              </label>
+                <label>
+                    <span>CVV</span>
+                    <input type="text" size="4" data-culqi="card[cvv]" id="card[cvv]">
+                </label>
             </div>
             <div>
-              <label>
-                <span>Fecha expiración (MM/YYYY)</span>
-                <input size="2" data-culqi="card[exp_month]" id="card[exp_month]">
-                <span>/</span>
-                <input size="4" data-culqi="card[exp_year]" id="card[exp_year]">
-              </label>
+                <label>
+                    <span>Fecha expiración (MM/YYYY)</span>
+                    <input size="2" data-culqi="card[exp_month]" id="card[exp_month]">
+                    <span>/</span>
+                    <input size="4" data-culqi="card[exp_year]" id="card[exp_year]">
+                </label>
             </div>
             <!--Para habilitar CSI debemos agregar el siguiente select-->
             <div>
@@ -77,7 +63,7 @@
                     <option value="4">4 cuotas</option>
                     <option value="5">5 cuotas</option>
                 </select>
-              </div>
+            </div>
         </form>
         <button id="btn_pagar">Pagar</button>
     </div>
@@ -89,65 +75,64 @@
     <script src="https://checkout.culqi.com/js/v4"></script>
 
     <script>
-      Culqi.publicKey = 'pk_test_dfc536e6c760acf3';
+        Culqi.publicKey = 'pk_test_dfc536e6c760acf3';
     </script>
 
     <script>
         const priceTotal = document.getElementById("priceTotal").innerText;
         const priceTotalNumber = parseFloat(priceTotal.replace("S/.", "")) * 100;
-        console.log(priceTotalNumber)
 
         Culqi.settings({
-        currency: 'PEN',
-        amount: priceTotalNumber,
-        // order: 'ord_live_0CjjdWhFpEAZlxlz', // Este parámetro es requerido para realizar pagos con pagoEfectivo, billeteras y Cuotéalo
-        // xculqirsaid: 'Inserta aquí el id de tu llave pública RSA',
-        // rsapublickey: 'Inserta aquí tu llave pública RSA',
+            currency: 'PEN',
+            amount: priceTotalNumber,
+            // order: 'ord_live_0CjjdWhFpEAZlxlz', // Este parámetro es requerido para realizar pagos con pagoEfectivo, billeteras y Cuotéalo
+            // xculqirsaid: 'Inserta aquí el id de tu llave pública RSA',
+            // rsapublickey: 'Inserta aquí tu llave pública RSA',
         });
 
         Culqi.options({
             paymentMethods: {
-                tarjeta:    true,
+                tarjeta: true,
                 bancaMovil: false,
-                agente:     false,
-                billetera:  false,
-                cuotealo:   false,
-                yape:       false
+                agente: false,
+                billetera: false,
+                cuotealo: false,
+                yape: false
             }
-        });   
-        
+        });
+
         Culqi.validationPaymentMethods();
     </script>
 
     <script>
         const btn_pagar = document.getElementById("btn_pagar");
-    
+
         // Validamos los métodos de pago por el cual podras hacer la compra
         Culqi.validationPaymentMethods();
 
         //Obtenemos los metodos de pagos disponibles
         var paymentTypeAvailable = Culqi.paymentOptionsAvailable;
-        
+
         btn_pagar.addEventListener("click", function (e) {
-        // Crea el objeto Token con Culqi JS
-        if (paymentTypeAvailable.token.available) {
-            paymentTypeAvailable.token.generate();
-        }
-        // // Crea el objeto yape
-        // if (paymentTypeAvailable.yape.available) {
-        //     paymentTypeAvailable.yape.generate();
-        // }
-        // // Crea cip
-        // if (paymentTypeAvailable.cip.available) {
-        //     paymentTypeAvailable.cip.generate();
-        // }
-        // // Crea el link de cuotéalo
-        // if (paymentTypeAvailable.cuotealo.available) {
-        //     paymentTypeAvailable.cuotealo.generate();
-        // }
-    
-        e.preventDefault();
-    });
+            // Crea el objeto Token con Culqi JS
+            if (paymentTypeAvailable.token.available) {
+                paymentTypeAvailable.token.generate();
+            }
+            // // Crea el objeto yape
+            // if (paymentTypeAvailable.yape.available) {
+            //     paymentTypeAvailable.yape.generate();
+            // }
+            // // Crea cip
+            // if (paymentTypeAvailable.cip.available) {
+            //     paymentTypeAvailable.cip.generate();
+            // }
+            // // Crea el link de cuotéalo
+            // if (paymentTypeAvailable.cuotealo.available) {
+            //     paymentTypeAvailable.cuotealo.generate();
+            // }
+
+            e.preventDefault();
+        });
     </script>
 
     <script>
@@ -155,16 +140,15 @@
             if (Culqi.token) {
 
                 try {
-                    
                     // Objeto Token creado exitosamente!
                     const objetoToken = Culqi.token;
                     const objeto = {
                         amount: priceTotalNumber,
                         currency_code: "PEN",
                         objetoToken
-                    }                    
+                    }
 
-                    const response = await fetch("http://localhost:8080/api/pay", {
+                    const response = await fetch("http://localhost:8080/api/pay/culqi", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -174,22 +158,26 @@
 
                     if (response.ok) {
                         const responseData = await response.json();
-                        console.log(responseData);
-                        if (responseData){
-                            
-                        }
-                        console.log('Felicidades! Se realizó correctamente ');
-                        
+
+                        // En caso llegue la propiedad responseData.data vacía se considera un error
+                        if (Object.keys(responseData.data).length > 0) {
+                            if (!responseData.data.action_code) {
+                                console.log(responseData);
+                                alert('Felicidades!' + responseData.data.outcome.user_message);
+                            } else {
+                                console.log('Ha ocurrido un problema.', responseData.data.user_message);
+                                alert('Ha ocurrido un problema. ' + responseData.data.user_message);
+                            }
+                        } 
                     } else {
-                        console.error("Error al procesar la solicitud:", response.statusText);
+                        const responseData = await response.json();
+                        console.error("Error al procesar la solicitud:", responseData.message);
+                        alert("Error al procesar la solicitud: " + responseData.message);
                     }
-                
                 } catch (error) {
                     console.error("Error al realizar la solicitud:", error);
-
+                    alert("Error al realizar la solicitud: " + error);
                 }
-                
-
 
             } else if (Culqi.order) {
                 // // Objeto order creado exitosamente!
@@ -206,12 +194,12 @@
                 // }
             } else {
                 // Mostramos JSON de objeto error en consola
-                console.log("Error : ", Culqi.error);
+                console.log(Culqi.error);
+                alert( Culqi.error.user_message );
             }
         }
-
-
     </script>
 
-  </body>
-  </html>
+</body>
+
+</html>
