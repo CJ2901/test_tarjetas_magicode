@@ -28,7 +28,7 @@
 
       async function chargeStripe(objeto) {
         try {
-          const response = await fetch("http://localhost:8080/api/pay/stripe", {
+          const response = await fetch("https://backend-gitlab-magiccode-production.up.railway.app/api/pay/stripe", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
