@@ -40,7 +40,7 @@
             const responseData = await response.json();
 
             if (responseData && responseData.checkout_url) {
-              // Redirigir al usuario a la URL
+              // Redirigir al usuario a una nueva página
               window.location.href = responseData.checkout_url;
             } else {
               alert('URL de sesión de Stripe no válida');
